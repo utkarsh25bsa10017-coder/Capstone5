@@ -1,0 +1,164 @@
+// Prisma Schema for ChangelogAI
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  accounts      Account[]
+  sessions      Session[]
+  projects      Project[]
+  integrations  Integration[]
+  changelogs    Changelog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  githubRepo  String?
+  githubOwner String?
+  githubToken String?  @db.Text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  integrations Integration[]
+  changelogs   Changelog[]
+  releases     Release[]
+}
+
+model Integration {
+  id        String   @id @default(cuid())
+  type      String   // github, slack, linear, etc.
+  config    Json     // encrypted config
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Changelog {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @db.Text
+  version     String
+  status      String   @default("draft") // draft, published, archived
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  releaseId   String?
+  release     Release? @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+}
+
+model Release {
+  id          String   @id @default(cuid())
+  version     String
+  tagName     String?
+  description String?  @db.Text
+  isDraft     Boolean  @default(true)
+  isPrerelease Boolean @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  changelogs  Changelog[]
+}
+
+model Commit {
+  id        String   @id @default(cuid())
+  sha       String
+  message   String   @db.Text
+  author    String
+  authorEmail String
+  date      DateTime
+  url       String
+  category  String?  // feat, fix, docs, chore, etc.
+  createdAt DateTime @default(now())
+  
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, sha])
+}
+
+model PullRequest {
+  id        String   @id @default(cuid())
+  number    Int
+  title     String
+  body      String?  @db.Text
+  author    String
+  state     String   // open, closed, merged
+  mergedAt  DateTime?
+  url       String
+  labels    String[]
+  category  String?  // feat, fix, docs, chore, etc.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, number])
+}
