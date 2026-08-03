@@ -76,6 +76,8 @@ model Project {
   integrations Integration[]
   changelogs   Changelog[]
   releases     Release[]
+  commits      Commit[]
+  pullRequests PullRequest[]
 }
 
 model Integration {
@@ -124,6 +126,8 @@ model Release {
   projectId   String
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   changelogs  Changelog[]
+
+  @@unique([projectId, tagName])
 }
 
 model Commit {

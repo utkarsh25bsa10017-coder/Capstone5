@@ -6,11 +6,60 @@ import { categorizeCommit, categorizePR } from '@/lib/utils'
 const WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET
 
 function verifySignature(payload: string, signature: string): boolean {
-  if (!WEBHOOK_SECRET) return true // Allow in development
+  if (!WEBHOOK_SECRET) return true
   const hmac = crypto.createHmac('sha256', WEBHOOK_SECRET)
   const digest = 'sha256=' + hmac.update(payload).digest('hex')
   return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest))
 }
+
+interface GitHubCommit {
+  id: string
+  message: string
+  author?: { name?: string; email?: string }
+  timestamp: string
+  url: string
+}
+
+interface GitHubPullRequest {
+  number: number
+  title: string
+  body: string | null
+  user?: { login?: string }
+  state: string
+  merged_at: string | null
+  html_url: string
+  labels?: Array<{ name: string }>
+}
+
+interface GitHubRelease {
+  tag_name: string
+  body: string | null
+  draft: boolean
+  prerelease: boolean
+  published_at: string | null
+}
+
+interface GitHubRepository {
+  full_name: string
+}
+
+interface GitHubPushPayload {
+  repository?: GitHubRepository
+  ref?: string
+  commits?: GitHubCommit[]
+}
+
+interface GitHubPullRequestPayload {
+  repository?: GitHubRepository
+  pull_request?: GitHubPullRequest
+}
+
+interface GitHubReleasePayload {
+  repository?: GitHubRepository
+  release?: GitHubRelease
+}
+
+type GitHubPayload = GitHubPushPayload | GitHubPullRequestPayload | GitHubReleasePayload
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,10 +71,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 
-    const data = JSON.parse(payload)
+    const data = JSON.parse(payload) as GitHubPayload
 
-    // Find project by repository
-    const repoFullName = data.repository?.full_name
+    const repoFullName = 'repository' in data ? data.repository?.full_name : undefined
     if (!repoFullName) {
       return NextResponse.json({ error: 'No repository in payload' }, { status: 400 })
     }
@@ -39,16 +87,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Project not found or inactive' }, { status: 200 })
     }
 
-    // Handle different event types
     switch (event) {
       case 'push':
-        await handlePushEvent(project.id, data)
+        await handlePushEvent(project.id, data as GitHubPushPayload)
         break
       case 'pull_request':
-        await handlePullRequestEvent(project.id, data)
+        await handlePullRequestEvent(project.id, data as GitHubPullRequestPayload)
         break
       case 'release':
-        await handleReleaseEvent(project.id, data)
+        await handleReleaseEvent(project.id, data as GitHubReleasePayload)
         break
     }
 
@@ -59,10 +106,12 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function handlePushEvent(projectId: string, data: any) {
+async function handlePushEvent(projectId: string, data: GitHubPushPayload) {
   const commits = data.commits || []
-  const ref = data.ref // e.g., "refs/heads/main"
-  const branch = ref.replace('refs/heads/', '')
+  const ref = data.ref
+  if (ref) {
+    ref.replace('refs/heads/', '')
+  }
 
   for (const commit of commits) {
     await prisma.commit.upsert({
@@ -82,7 +131,7 @@ async function handlePushEvent(projectId: string, data: any) {
   }
 }
 
-async function handlePullRequestEvent(projectId: string, data: any) {
+async function handlePullRequestEvent(projectId: string, data: GitHubPullRequestPayload) {
   const pr = data.pull_request
   if (!pr) return
 
@@ -97,18 +146,18 @@ async function handlePullRequestEvent(projectId: string, data: any) {
       state: pr.state,
       mergedAt: pr.merged_at ? new Date(pr.merged_at) : null,
       url: pr.html_url,
-      labels: pr.labels?.map((l: any) => l.name) || [],
-      category: categorizePR(pr.title, pr.labels?.map((l: any) => l.name) || []),
+      labels: pr.labels?.map((l) => l.name) || [],
+      category: categorizePR(pr.title, pr.labels?.map((l) => l.name) || []),
     },
     update: {
       state: pr.state,
       mergedAt: pr.merged_at ? new Date(pr.merged_at) : null,
-      labels: pr.labels?.map((l: any) => l.name) || [],
+      labels: pr.labels?.map((l) => l.name) || [],
     },
   })
 }
 
-async function handleReleaseEvent(projectId: string, data: any) {
+async function handleReleaseEvent(projectId: string, data: GitHubReleasePayload) {
   const release = data.release
   if (!release) return
 

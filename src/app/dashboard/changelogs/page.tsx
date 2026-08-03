@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, FileText, Search, Loader2, Edit, Eye, Download, Trash2, Copy } from 'lucide-react'
+import { Plus, FileText, Search, Loader2, Eye, Download, Trash2, Copy } from 'lucide-react'
 import { formatRelativeTime, cn, CATEGORY_LABELS, CATEGORY_COLORS } from '@/lib/utils'
 import Link from 'next/link'
 
@@ -94,7 +94,7 @@ export default function ChangelogsPage() {
           <p className="text-muted-foreground">Create, manage, and publish your release notes.</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
+          <DialogTrigger>
             <Button className="gap-2">
               <Plus className="h-4 w-4" />
               Create Changelog
@@ -137,7 +137,7 @@ export default function ChangelogsPage() {
                   <Input placeholder="v2.2.0" defaultValue="v2.2.0" />
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  We'll fetch commits and PRs from the selected range and categorize them automatically.
+                  We&apos;ll fetch commits and PRs from the selected range and categorize them automatically.
                 </p>
               </div>
               <DialogFooter>
@@ -211,7 +211,7 @@ export default function ChangelogsPage() {
                       </Badge>
                     ))}
                   </div>
-                  <Button variant="ghost" size="icon" asChild>
+                  <Button variant="ghost" size="icon">
                     <Link href={`/dashboard/changelogs/${changelog.id}`}>
                       <Eye className="h-4 w-4" />
                     </Link>

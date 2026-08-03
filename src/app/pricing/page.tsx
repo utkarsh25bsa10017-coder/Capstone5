@@ -2,8 +2,23 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Check, X, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
-const plans = [
+type ButtonVariant = 'default' | 'outline' | 'ghost' | 'destructive' | 'secondary' | 'success' | 'link'
+
+interface Plan {
+  name: string
+  price: string
+  period: string
+  description: string
+  features: string[]
+  notIncluded: string[]
+  cta: string
+  variant: ButtonVariant
+  popular: boolean
+}
+
+const plans: Plan[] = [
   {
     name: 'Free',
     price: '$0',
@@ -137,7 +152,7 @@ export default function PricingPage() {
               Simple, transparent pricing
             </span>
             <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Choose the plan that's right for you
+              Choose the plan that&apos;s right for you
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               All plans include a 14-day free trial. No credit card required. Cancel anytime.
@@ -190,9 +205,8 @@ export default function PricingPage() {
                       className="w-full"
                       variant={plan.variant}
                       size="lg"
-                      asChild
                     >
-                      <a href="/auth/signin">{plan.cta}</a>
+                      <Link href="/auth/signin">{plan.cta}</Link>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -258,12 +272,12 @@ export default function PricingPage() {
               <p className="mb-8 text-muted-foreground">
                 Join thousands of developers who automate their changelogs with ChangelogAI.
               </p>
-              <a href="/auth/signin">
-                <Button size="lg" className="gap-2" asChild>
+              <Link href="/auth/signin">
+                <Button size="lg" className="gap-2">
                   <span>Start Free Trial</span>
                   <Sparkles className="h-4 w-4" />
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
         </section>

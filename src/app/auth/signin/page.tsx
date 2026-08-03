@@ -4,11 +4,11 @@ import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Github, Mail, Lock, AlertCircle } from 'lucide-react'
+import { GitBranch, Mail, Lock, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
-export default function SignInPage() {
+function SignInForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
   const error = searchParams.get('error')
@@ -64,7 +64,7 @@ export default function SignInPage() {
               onClick={() => handleSignIn('github')}
               disabled={isLoading}
             >
-              <Github className="h-4 w-4" />
+              <GitBranch className="h-4 w-4" />
               <span>GitHub</span>
             </Button>
           </div>
@@ -116,7 +116,7 @@ export default function SignInPage() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <p className="text-sm text-muted-foreground text-center">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/auth/signin?mode=register" className="font-medium text-primary hover:underline">
               Sign up
             </Link>
@@ -130,5 +130,15 @@ export default function SignInPage() {
         </CardFooter>
       </Card>
     </div>
+  )
+}
+
+import { Suspense } from 'react'
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+      <SignInForm />
+    </Suspense>
   )
 }

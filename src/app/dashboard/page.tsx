@@ -4,9 +4,9 @@ import { useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Github, FileText, Clock, TrendingUp, ArrowRight, ExternalLink } from 'lucide-react'
+import { Plus, GitBranch, FileText, Clock, TrendingUp, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { formatRelativeTime, cn } from '@/lib/utils'
+import { formatRelativeTime } from '@/lib/utils'
 
 const mockProjects = [
   {
@@ -80,18 +80,18 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">
-            Welcome back, {session?.user?.name || 'User'}. Here's what's happening with your projects.
+            Welcome back, {session?.user?.name || 'User'}. Here&apos;s what&apos;s happening with your projects.
           </p>
         </div>
         <div className="flex gap-2">
           <Link href="/dashboard/projects/new">
-            <Button className="gap-2" asChild>
+            <Button className="gap-2">
               <Plus className="h-4 w-4" />
               New Project
             </Button>
           </Link>
           <Link href="/dashboard/changelogs/new">
-            <Button variant="outline" className="gap-2" asChild>
+            <Button variant="outline" className="gap-2">
               <FileText className="h-4 w-4" />
               Create Changelog
             </Button>
@@ -103,7 +103,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
-            <Github className="h-4 w-4 text-muted-foreground" />
+            <GitBranch className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{mockProjects.length}</div>
@@ -117,7 +117,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockChangelogs.filter(c => c.status === 'published').length}
+              {mockChangelogs.filter((c) => c.status === 'published').length}
             </div>
             <p className="text-xs text-muted-foreground">Published this month</p>
           </CardContent>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockChangelogs.filter(c => c.status === 'draft').length}
+              {mockChangelogs.filter((c) => c.status === 'draft').length}
             </div>
             <p className="text-xs text-muted-foreground">Ready to publish</p>
           </CardContent>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <Github className="h-5 w-5" />
+                      <GitBranch className="h-5 w-5" />
                     </div>
                     <div>
                       <p className="font-medium">{project.name}</p>
@@ -216,15 +216,14 @@ export default function DashboardPage() {
                       <p className="text-sm text-muted-foreground">{changelog.projectName}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant={
+                  <Badge
+                    variant={
                       changelog.status === 'published' ? 'success' :
                       changelog.status === 'draft' ? 'secondary' : 'outline'
-                    }>
-                      {changelog.status}
-                    </Badge>
-                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                  </div>
+                    }
+                  >
+                    {changelog.status}
+                  </Badge>
                 </Link>
               ))}
               <Link

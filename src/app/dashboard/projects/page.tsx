@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
-import { Plus, Github, Search, Loader2, Trash2, Edit, ExternalLink } from 'lucide-react'
-import { formatRelativeTime, cn } from '@/lib/utils'
+import { Plus, GitBranch, Search, Loader2, Edit, ExternalLink } from 'lucide-react'
+import { formatRelativeTime } from '@/lib/utils'
 import Link from 'next/link'
 
 const mockProjects = [
@@ -84,7 +84,7 @@ export default function ProjectsPage() {
           <p className="text-muted-foreground">Manage your GitHub repositories and generate changelogs.</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
+          <DialogTrigger>
             <Button className="gap-2">
               <Plus className="h-4 w-4" />
               New Project
@@ -138,7 +138,7 @@ export default function ProjectsPage() {
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Make sure you've installed the ChangelogAI GitHub App and granted access to this repository.
+                  Make sure you&apos;ve installed the ChangelogAI GitHub App and granted access to this repository.
                 </p>
               </div>
               <DialogFooter>
@@ -174,7 +174,7 @@ export default function ProjectsPage() {
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Github className="h-5 w-5" />
+                    <GitBranch className="h-5 w-5" />
                   </div>
                   <div>
                     <CardTitle className="text-lg">{project.name}</CardTitle>
@@ -183,7 +183,7 @@ export default function ProjectsPage() {
                     </p>
                   </div>
                 </div>
-                <span className={cn('text-xs px-2 py-1 rounded-full', project.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')}>
+                <span className={`text-xs px-2 py-1 rounded-full ${project.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                   {project.isActive ? 'Active' : 'Inactive'}
                 </span>
               </div>
@@ -207,9 +207,9 @@ export default function ProjectsPage() {
               <div className="flex gap-2 pt-2">
                 <Link
                   href={`/dashboard/projects/${project.id}`}
-                  className="flex-1 btn-outline"
+                  className="flex-1"
                 >
-                  <Button variant="outline" className="w-full gap-1" asChild>
+                  <Button variant="outline" className="w-full gap-1">
                     <Edit className="h-3.5 w-3.5" />
                     Manage
                   </Button>
@@ -218,9 +218,8 @@ export default function ProjectsPage() {
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-ghost"
                 >
-                  <Button variant="ghost" className="gap-1" asChild>
+                  <Button variant="ghost" className="gap-1">
                     <ExternalLink className="h-3.5 w-3.5" />
                     View on GitHub
                   </Button>

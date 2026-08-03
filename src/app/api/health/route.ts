@@ -2,6 +2,16 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
 export async function GET() {
+  // Skip database check during build
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      database: 'skipped-during-build',
+      version: process.env.npm_package_version || '1.0.0',
+    })
+  }
+  
   try {
     // Check database connection
     await prisma.$queryRaw`SELECT 1`

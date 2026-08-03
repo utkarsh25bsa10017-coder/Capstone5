@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowRight, Github, Zap, Shield, Clock, CheckCircle } from 'lucide-react'
+import { ArrowRight, GitBranch, Zap, Shield, Clock, CheckCircle } from 'lucide-react'
 
 export default function HomePage() {
   return (
@@ -44,7 +44,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/auth/signin">
-                  <Button size="lg" className="w-full sm:w-auto gap-2" asChild>
+                  <Button size="lg" className="w-full sm:w-auto gap-2">
                     <span>Start Free Trial</span>
                     <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -66,7 +66,7 @@ export default function HomePage() {
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { icon: Github, label: 'GitHub Integration', desc: 'Connect repos in one click' },
+                { icon: GitBranch, label: 'GitHub Integration', desc: 'Connect repos in one click' },
                 { icon: Zap, label: 'AI Categorization', desc: 'Auto-detect features, fixes, docs' },
                 { icon: Clock, label: 'Save Hours', desc: 'Generate in seconds, not hours' },
                 { icon: Shield, label: 'Secure & Private', desc: 'Your code never leaves GitHub' },
@@ -173,7 +173,7 @@ export default function HomePage() {
                 Join hundreds of teams saving hours every release cycle. Start your free 14-day trial today.
               </p>
               <Link href="/auth/signin">
-                <Button size="lg" className="gap-2" asChild>
+                <Button size="lg" className="gap-2">
                   <span>Start Free Trial</span>
                   <ArrowRight className="h-4 w-4" />
                 </Button>

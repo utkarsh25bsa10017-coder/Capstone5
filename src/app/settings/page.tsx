@@ -8,9 +8,8 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { Github, User, Key, Bell, Shield, Trash2, Save, Loader2 } from 'lucide-react'
+import { GitBranch, Key, Bell, Trash2, Save, Loader2 } from 'lucide-react'
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
 
 export default function SettingsPage() {
   const { data: session, update } = useSession()
@@ -109,7 +108,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between p-4 rounded-lg border">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Github className="h-6 w-6" />
+                    <GitBranch className="h-6 w-6" />
                   </div>
                   <div>
                     <p className="font-medium">GitHub</p>
@@ -117,7 +116,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <Button variant="outline" className="gap-2">
-                  <Github className="h-4 w-4" />
+                  <GitBranch className="h-4 w-4" />
                   Connect GitHub
                 </Button>
               </div>

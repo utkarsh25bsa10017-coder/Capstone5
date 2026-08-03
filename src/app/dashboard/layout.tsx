@@ -4,9 +4,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import {
   LayoutDashboard,
@@ -16,8 +14,6 @@ import {
   LogOut,
   User,
   ChevronLeft,
-  ChevronRight,
-  Plus,
 } from 'lucide-react'
 import { Header } from '@/components/header'
 
@@ -35,28 +31,14 @@ export default function DashboardLayout({
 }) {
   const { data: session } = useSession()
   const pathname = usePathname()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
-
-  const userInitials = session?.user?.name
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2) || 'U'
 
   return (
     <div className="flex h-screen bg-background">
       <Header />
       
       <div className="flex flex-1 overflow-hidden">
-        <aside
-          className={cn(
-            'fixed inset-y-0 left-0 z-50 w-64 transform bg-card border-r transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0',
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full',
-            mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          )}
-        >
+        <aside className="fixed inset-y-0 left-0 z-50 w-64 transform bg-card border-r transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0">
           <div className="flex h-full flex-col">
             <div className="flex h-16 items-center justify-between border-b px-4 lg:hidden">
               <span className="font-bold text-xl">
@@ -78,12 +60,11 @@ export default function DashboardLayout({
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       isActive
                         ? 'bg-primary text-primary-foreground'
                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                    )}
+                    }`}
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
                     {item.name}
@@ -94,12 +75,11 @@ export default function DashboardLayout({
 
             <div className="border-t p-4">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start gap-3" asChild>
+                <DropdownMenuTrigger>
+                  <Button variant="outline" className="w-full justify-start gap-3">
                     <Link href="/settings">
                       <User className="h-4 w-4" />
                       <span className="truncate">{session?.user?.name || 'User'}</span>
-                      <ChevronRight className="ml-auto h-4 w-4" />
                     </Link>
                   </Button>
                 </DropdownMenuTrigger>
@@ -109,7 +89,7 @@ export default function DashboardLayout({
                     <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem>
                     <Link href="/settings" className="flex w-full items-center px-2 py-1.5 text-sm">
                       <Settings className="mr-2 h-4 w-4" />
                       Settings

@@ -2,12 +2,11 @@
 
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, LogOut, User, Settings, ChevronDown } from 'lucide-react'
+import { Menu, X, LogOut, Settings } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
 
 export function Header() {
   const { data: session } = useSession()
@@ -45,7 +44,7 @@ export function Header() {
 
           {session?.user && (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={session.user.image || undefined} alt={session.user.name || ''} />
@@ -59,7 +58,7 @@ export function Header() {
                   <p className="text-xs text-muted-foreground truncate">{session.user.email}</p>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem>
                   <Link href="/settings" className="flex w-full items-center px-2 py-1.5 text-sm">
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
